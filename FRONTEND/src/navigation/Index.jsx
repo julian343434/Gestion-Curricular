@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext , useEffect  } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import AuthNavigation from "./AuthNavigation";
 import MainNavigation from "./MainNavigation";
@@ -13,13 +13,17 @@ const LoadingScreen = () => {
 
 const ContainerNavigation = () => {
 
-    const { token, isLoading } = useContext(AuthContext);
+    const { token, isLoading , session } = useContext(AuthContext);
+
+    useEffect(() => {
+        console.log(`session a cambiado y tendra que reiniciar el componente : session=${session}, userRole=${token}`);
+      }, [session])
 
     if (isLoading) {
         return <LoadingScreen />;
     }
 
-    return token ? <MainNavigation /> : <AuthNavigation />;
+    return token && session ? <MainNavigation /> : <AuthNavigation />;
 
 };
 

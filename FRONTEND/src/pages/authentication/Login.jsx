@@ -10,7 +10,7 @@ export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const { setToken, setUserRole } = useContext(AuthContext);
+    const { setToken, setUserRole , setSession } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -26,6 +26,7 @@ export default function Login() {
             setUserRole("admin");
             navigate("/user-admin");
             setIsLoading(false);
+            setSession(true);
             return;
         }
 
@@ -37,6 +38,7 @@ export default function Login() {
         setUserRole("user");
         navigate("/home"); // Redirige a la ruta de usuarios normales
         setIsLoading(false);
+        setSession(true);
     };
 
     return (

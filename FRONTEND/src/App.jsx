@@ -8,7 +8,7 @@ function App() {
         <NextUIProvider>
             <AuthProvider>
                 <MainLayout>
-                    <ContainerNavigation />
+                    <ContainerNavigation/>
                 </MainLayout>
             </AuthProvider>
         </NextUIProvider>

@@ -5,12 +5,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 
 export default function AuthNavigation() {
-    
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+                <Route path="/register" element={<Register />}/>
                 <Route path="*" element={<DeniedPage />} />
             </Routes>
         </BrowserRouter>

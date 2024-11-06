@@ -8,7 +8,7 @@ const UserAdmin = () => {
 		<div className="flex 100vh 100wh h-full w-full">
 			<SideNav />
 			<div className="flex justify-center w-full h-full items-center">
-				<Notificaciones></Notificaciones>
+				
 			</div>
 		</div>
 	);
