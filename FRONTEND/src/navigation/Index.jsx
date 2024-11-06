@@ -1,10 +1,9 @@
-import React from "react";
-import { useAuth } from "../providers/AuthProvider"; // Asegúrate de que el path sea correcto
+import { useContext } from "react";
+import { AuthContext } from "../providers/AuthProvider";
 import AuthNavigation from "./AuthNavigation";
 import MainNavigation from "./MainNavigation";
 
-const LoadingScreen: React.FC = () => {
-    
+const LoadingScreen = () => {
     return (
         <div className="flex justify-center items-center h-screen">
             <p>Loading...</p>
@@ -12,14 +11,16 @@ const LoadingScreen: React.FC = () => {
     );
 };
 
-const ContainerNavigation: React.FC = () => {
-    const { token, isLoading } = useAuth(); // Utiliza el hook personalizado para obtener el contexto
+const ContainerNavigation = () => {
+
+    const { token, isLoading } = useContext(AuthContext);
 
     if (isLoading) {
         return <LoadingScreen />;
     }
 
     return token ? <MainNavigation /> : <AuthNavigation />;
+
 };
 
 export default ContainerNavigation;

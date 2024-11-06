@@ -1,10 +1,5 @@
-import React, { ReactNode } from 'react';
+const MainLayout = ({ children }) => {
 
-interface MainLayoutProps {
-    children: ReactNode;
-}
-
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     console.log("MainLayout");
 
     return (

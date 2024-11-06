@@ -3,16 +3,17 @@ import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { Link, useNavigate } from "react-router-dom";
 import { Spinner } from "@nextui-org/spinner";
-import { AuthContext } from "../../providers/AuthProvider"; // Asegúrate de que esta importación sea correcta
+import { GetAccessToken } from "../../services/AuthServices"; // Asegúrate de que esta función maneje los roles.
+import { AuthContext } from "../../providers/AuthProvider";
 
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const { setToken, setUserRole } = useContext(AuthContext) || {}; // Maneja el caso donde AuthContext es undefined
+    const { setToken, setUserRole } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
 
