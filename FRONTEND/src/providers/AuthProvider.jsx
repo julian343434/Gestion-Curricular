@@ -7,7 +7,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [userRole, setUserRole] = useState(localStorage.getItem('role'));
-    const [session , setSession] = useState(false);
+    const [session , setSession] = useState(localStorage.getItem('session'));
 
     
     useEffect(() => {

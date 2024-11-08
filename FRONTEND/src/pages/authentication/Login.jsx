@@ -22,11 +22,12 @@ export default function Login() {
             const adminJwt = "fake-jwt-for-admin"; // Aquí puedes crear un JWT ficticio si no estás usando uno real
             localStorage.setItem('token', adminJwt);
             localStorage.setItem('role', "admin");
+            localStorage.setItem('session', true);
             setToken(adminJwt);
             setUserRole("admin");
-            navigate("/user-admin");
+            setSession(true)
             setIsLoading(false);
-            setSession(true);
+            navigate("/user-admin");
             return;
         }
 
