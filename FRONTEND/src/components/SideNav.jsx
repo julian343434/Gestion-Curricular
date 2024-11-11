@@ -2,13 +2,18 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaImages, FaVideo, FaUsers, FaSignOutAlt, FaCog, FaBars } from 'react-icons/fa';
 import { Button } from "@nextui-org/button";
+import { useContext } from 'react';
+import { AuthContext } from "../providers/AuthProvider";
 
 const SideNav = () => {
     const [isOpen, setIsOpen] = useState(true);
+    const {setSession} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        setSession(false);
         navigate('/');
     };
 
