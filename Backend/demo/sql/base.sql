@@ -87,3 +87,5 @@ create table pertenece(
     anio integer,
     primary key (id_plan_estudio, id_curso)
 );
+
+insert into rol (nombre) values ('Administrador'), ('Profesor de Comite'), ('Profesor'), ('Estudiante');

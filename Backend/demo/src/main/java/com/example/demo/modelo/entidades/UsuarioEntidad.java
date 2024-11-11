@@ -1,14 +1,17 @@
-package com.example.demo.modelo;
+package com.example.demo.modelo.entidades;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 import java.util.List;
 
 @Entity
+@Table(name = "usuario")
 public class UsuarioEntidad {
-    //
+   
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_usuario;
@@ -18,8 +21,8 @@ public class UsuarioEntidad {
     private String correo;
     private boolean activo;
 
-    @OneToMany(mappedBy = "id_usuario")
-    private List<PresentaEntidad> rol;
+    @OneToMany(mappedBy = "usuario")
+    private List<PresentaEntidad> roles;
 
     // Constructor, getters, y setters
     
@@ -51,7 +54,7 @@ public class UsuarioEntidad {
     public boolean getActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
 
-    public List<PresentaEntidad> getRol() { return rol; }
-    public void setRol(List<PresentaEntidad> rol) { this.rol = rol; }
+    public List<PresentaEntidad> getRol() { return roles; }
+    public void setRol(List<PresentaEntidad> roles) { this.roles = roles; }
 }
 

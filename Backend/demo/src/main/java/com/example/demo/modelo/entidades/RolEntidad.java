@@ -1,12 +1,15 @@
-package com.example.demo.modelo;
+package com.example.demo.modelo.entidades;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 import java.util.List;
 
 @Entity
+@Table(name = "rol") 
 public class RolEntidad {
 
     @Id

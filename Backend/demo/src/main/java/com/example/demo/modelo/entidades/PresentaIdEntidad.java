@@ -1,4 +1,4 @@
-package com.example.demo.modelo;
+package com.example.demo.modelo.entidades;
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 
