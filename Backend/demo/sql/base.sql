@@ -19,7 +19,7 @@ create table presenta(
     id_usuario integer,
     periodo integer check (periodo >= 1 and periodo <=2), --se restringe que el periodo solo puede ser 1 o 2
     anio integer,
-    primary key (id_rol, id_usuario),
+    primary key (id_rol, id_usuario, periodo, anio),
     foreign key (id_rol) references rol(id_rol),
     foreign key (id_usuario) references usuario(id_usuario)
 );
