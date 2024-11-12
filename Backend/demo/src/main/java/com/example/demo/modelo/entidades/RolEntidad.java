@@ -8,6 +8,8 @@ import jakarta.persistence.Table;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "rol") 
 public class RolEntidad {
@@ -17,6 +19,7 @@ public class RolEntidad {
     private Long id_rol;
     private String nombre;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "rol")
     private List<PresentaEntidad> usuarios;
 
@@ -24,6 +27,9 @@ public class RolEntidad {
     public RolEntidad(String nombre) {
         this.nombre = nombre;
     }
+
+    public Long getId() { return id_rol; }
+    public void serId(Long id_rol) { this.id_rol = id_rol; }
 
     public String getNombre() { return nombre; }
     public void serNombre(String nombre) { this.nombre = nombre; }

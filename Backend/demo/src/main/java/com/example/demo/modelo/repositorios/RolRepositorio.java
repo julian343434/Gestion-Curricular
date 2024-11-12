@@ -4,6 +4,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.modelo.entidades.RolEntidad;
 
+
 @Repository
 public interface RolRepositorio extends JpaRepository<RolEntidad, Long> {
+
+   RolEntidad findByNombre(String nombre);
 }

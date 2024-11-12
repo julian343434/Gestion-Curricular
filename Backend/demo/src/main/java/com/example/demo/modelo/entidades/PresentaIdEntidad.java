@@ -2,10 +2,13 @@ package com.example.demo.modelo.entidades;
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Embeddable
 public class PresentaIdEntidad implements Serializable {
     
     private Long id_rol;
+    @JsonIgnore
     private Long id_usuario;
     private int periodo;
     private int anio;
