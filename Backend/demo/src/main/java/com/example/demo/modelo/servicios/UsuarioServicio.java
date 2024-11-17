@@ -1,59 +1,100 @@
 package com.example.demo.modelo.servicios;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.modelo.entidades.UsuarioEntidad;
 import com.example.demo.modelo.repositorios.UsuarioRepositorio;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Base64;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 @Service
 public class UsuarioServicio {
      
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
  
     public List<UsuarioEntidad> obtenerUsuarios(){
-        return usuarioRepositorio.findAll();
+
+        List<UsuarioEntidad> usuarios = usuarioRepositorio.findAll();
+
+        if(usuarios.isEmpty()){
+            throw new RuntimeException("Sin usuarios registrados");
+        }
+        
+        return usuarios;
+    }
+
+    public UsuarioEntidad obtenerUsuario(Long id){
+        return usuarioRepositorio.findById(id).orElseThrow(() -> new RuntimeException("usario " + id + " no encontrado"));
     }
 
     public UsuarioEntidad guardarUsuario(Map<String, Object> usuario){
 
+        nombreUsuarioDuplicado((String) usuario.get("nombre_usuario"));
+        correoDuplicado((String) usuario.get("correo"));
+
         UsuarioEntidad nuevoUsuario = new UsuarioEntidad();
 
         nuevoUsuario.setNombre((String) usuario.get("nombre"));
-        nuevoUsuario.setNombre_usuario((String) usuario.get("nombre_usuario"));
+        nuevoUsuario.setnombreUsuario((String) usuario.get("nombre_usuario"));
         nuevoUsuario.setCorreo((String) usuario.get("correo"));
         nuevoUsuario.setActivo((boolean) usuario.get("activo"));
-        nuevoUsuario.setContrasena(generarHash((String) usuario.get("contrasena"), generarSal()));
+        nuevoUsuario.setContrasena(passwordEncoder.encode((String) usuario.get("contrasena")));
+        nuevoUsuario.setRol(new ArrayList<>());
         return usuarioRepositorio.save(nuevoUsuario);
     }
 
-      // Método para generar hash de una cadena usando SHA-256
-    public static String generarHash(String input, String salt) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(salt.getBytes()); // Añadir la sal al hash
-            byte[] hashedBytes = md.digest(input.getBytes());
-            return Base64.getEncoder().encodeToString(hashedBytes);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error al generar hash", e);
+    public void correoDuplicado( String correo){
+        if(usuarioRepositorio.findByCorreo(correo).isPresent()){
+            throw new RuntimeException("Correo ya esta en uso");
         }
     }
-    
-    // Método para generar una sal segura
-    public static String generarSal() {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        return Base64.getEncoder().encodeToString(salt);
+
+    public void nombreUsuarioDuplicado(String nombre){
+        if(usuarioRepositorio.findByNombreUsuario(nombre).isPresent()){
+            throw new RuntimeException("Nombre de usuario ya esta en uso");
+        }
+    }
+
+    public void actulizarUsuario(UsuarioEntidad usuario, Map<String, Object> campos){
+
+        campos.forEach((key, value) -> {
+            if(key == "correo"){
+                correoDuplicado((String) value);
+            }
+            if (key == "nombre_usuario") {
+                nombreUsuarioDuplicado((String) value);
+                key = "nombreUsuario";
+            }
+            Field field = ReflectionUtils.findField(UsuarioEntidad.class, key);
+            if(field != null){
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, usuario, value);
+            }else{
+                throw new RuntimeException("Campo no encontrado " + key);
+            }
+        });
+
+        usuarioRepositorio.save(usuario);
+    }
+
+    public void desactivarUsuario(UsuarioEntidad usuario){
+        usuario.setActivo(false);
+        usuarioRepositorio.save(usuario);
+    }
+
+    public void activarUsuario(UsuarioEntidad usuario){
+        usuario.setActivo(true);
+        usuarioRepositorio.save(usuario);
     }
 
 }

@@ -1,4 +1,5 @@
 package com.example.demo.modelo.entidades;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,8 +9,6 @@ import jakarta.persistence.Table;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "usuario")
 public class UsuarioEntidad {
@@ -17,8 +16,11 @@ public class UsuarioEntidad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_usuario;
+    
     private String nombre;
-    private String nombre_usuario;
+    @Column(name = "nombre_usuario", unique = true, nullable = false)
+    private String nombreUsuario;
+    @Column(unique = true, nullable = false)
     private String contrasena;
     private String correo;
     private boolean activo;
@@ -32,7 +34,7 @@ public class UsuarioEntidad {
     
     public UsuarioEntidad(String nombre, String nombre_usuario, String contrasena, String correo, boolean activo) {
         this.nombre = nombre;
-        this.nombre_usuario = nombre_usuario;
+        this.nombreUsuario = nombre_usuario;
         this.contrasena = contrasena;
         this.correo = correo;
         this.activo = activo;
@@ -44,8 +46,8 @@ public class UsuarioEntidad {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getNombre_usuario() { return nombre_usuario; }
-    public void setNombre_usuario(String nombre_usuario) { this.nombre_usuario = nombre_usuario; }
+    public String getnombreUsuario() { return nombreUsuario; }
+    public void setnombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
 
     public String getContrasena() { return contrasena; }
     public void setContrasena(String contrasena) { this.contrasena = contrasena; }

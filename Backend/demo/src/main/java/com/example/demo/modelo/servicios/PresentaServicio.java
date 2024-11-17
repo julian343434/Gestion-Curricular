@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.modelo.entidades.PresentaEntidad;
 import com.example.demo.modelo.entidades.PresentaIdEntidad;
+import com.example.demo.modelo.entidades.RolEntidad;
 import com.example.demo.modelo.repositorios.PresentaRepositorio;
 
 @Service
@@ -26,5 +27,11 @@ public class PresentaServicio {
 
     public PresentaEntidad guardarRelacion(PresentaEntidad relacion){
         return presentaRepositorio.save(relacion);
+    }
+
+    public RolEntidad obtenerUltimoRol(Long usuarioId) {
+        return presentaRepositorio.findFirstByUsuarioIdOrderByIdAnioDescIdPeriodoDesc(usuarioId)
+                .map(PresentaEntidad::getRol) // Obtiene la entidad de rol desde PresentaEntidad
+                .orElseThrow(() -> new RuntimeException("No se encontró ningún rol para el usuario con ID: " + usuarioId));
     }
 }
