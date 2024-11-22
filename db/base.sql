@@ -10,7 +10,8 @@ create table usuario(
     nombre varchar(30),
     nombre_usuario varchar(30) unique, --para que no se repita el nombre de usuario en la tabla
     contrasena text,
-    correo text unique check (correo ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+(\.[A-Za-z]{2,})+$') --para que tenga la estructura de un correo
+    correo text unique check (correo ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+(\.[A-Za-z]{2,})+$'),
+    activo boolean --para que tenga la estructura de un correo
 );
 
 --se guarda el registro de que tipo de rol a tenido el usuario en el tiempo 
@@ -89,5 +90,14 @@ create table pertenece(
 );
 
 insert into rol (nombre) values ('Administrador'), ('Profesor de Comite'), ('Profesor'), ('Estudiante');
-insert into usuario (id_usuario, nombre, nombre_usuario, contrasena, correo, activo) values (0, 'Software1', 'Admin', '$2a$10$rRudbKUhoXlyylTFaBpOAuk6F/TIYfDp.NQ40f/fQXXZpNIXb3k9O', 'Admin@unillanos.edu.co', true);
-insert into presenta (id_rol, id_usuario, periodo, anio) values (1, 0, 2, 2022);
+
+
+-- Inserta el usuario
+INSERT INTO usuario (nombre, nombre_usuario, contrasena, correo, activo)
+VALUES ('Administrador', 'admin', '$2a$10$rRudbKUhoXlyylTFaBpOAuk6F/TIYfDp.NQ40f/fQXXZpNIXb3k9O', 'admin@unillanos.edu.co', TRUE);
+
+-- Inserta el rol del usuario
+INSERT INTO presenta (id_rol, id_usuario, periodo, anio)
+VALUES ((SELECT id_rol FROM rol WHERE nombre = 'Administrador'), 
+        (SELECT id_usuario FROM usuario WHERE nombre_usuario = 'admin'), 
+        1, 2024);

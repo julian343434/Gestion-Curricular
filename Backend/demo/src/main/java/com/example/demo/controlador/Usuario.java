@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+// Permitir solicitudes desde el frontend para este controlador
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/usuario")
 public class Usuario {
@@ -51,7 +55,7 @@ public class Usuario {
         "anio": 2023
     }
     */
-
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/guardar")
     @PreAuthorize("hasRole('Administrador')")
     public UsuarioEntidad guardarUsuario(@RequestBody Map<String, Object> datos) {
@@ -64,7 +68,7 @@ public class Usuario {
 
         PresentaEntidad nuevaRelacion = presentaServicio.crearRelacion(nuevoUsuario.getId(), rol.getId(), datos);
         
-        nuevaRelacion.setUsuario(nuevoUsuario);
+        nuevaRelacion.setUsuario(nuevoUsuario); 
         nuevaRelacion.setRol(rol);
 
         presentaServicio.guardarRelacion(nuevaRelacion);

@@ -2,42 +2,48 @@
 
 import React, { useState } from 'react'
 import { PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { createUser } from '../services/GestionUsuariosServices'; // Asegúrate de que la ruta sea correcta
+
+// Lista de roles mapeada a partir de tu base de datos
+const ROLES = [
+  { value: 'Administrador', label: 'Administrador' },
+  { value: 'Profesor de Comite', label: 'Profesor de Comité' },
+  { value: 'Profesor', label: 'Profesor' },
+  { value: 'Estudiante', label: 'Estudiante' }
+]
 
 export default function UserManagement() {
   const [users, setUsers] = useState([
-    { id: 1, nombre: 'Juan Pérez', correo: 'juan@example.com', rol: 'admin' },
-    { id: 2, nombre: 'María García', correo: 'maria@example.com', rol: 'user' },
+    { id: 1, nombre: 'Juan Pérez', correo: 'juan@example.com', rol: 'Administrador' },
+    { id: 2, nombre: 'María García', correo: 'maria@example.com', rol: 'Estudiante' }
   ])
-  const [editingUser, setEditingUser] = useState(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  const handleSaveUser = (e) => {
+  // Crear nuevo usuario
+  const handleSaveUser = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const userData = {
-      id: editingUser ? editingUser.id : users.length + 1,
       nombre: formData.get('nombre'),
+      nombre_usuario: formData.get('nombre_usuario'),
+      contrasena: formData.get('contrasena'),
       correo: formData.get('correo'),
       rol: formData.get('rol'),
+      periodo: 1,  // Puedes ajustar según lo que necesites
+      anio: 2020  // Lo mismo aquí
     }
 
-    if (editingUser) {
-      setUsers(users.map(user => user.id === editingUser.id ? userData : user))
+    // Llamada al servicio para crear el usuario
+    const newUser = await createUser(userData)
+
+    if (newUser) {
+      setUsers([...users, newUser])
+      alert('Usuario creado exitosamente')
     } else {
-      setUsers([...users, userData])
+      alert('Error al crear usuario')
     }
 
     setIsDialogOpen(false)
-    setEditingUser(null)
-  }
-
-  const handleDeleteUser = (id) => {
-    setUsers(users.filter(user => user.id !== id))
-  }
-
-  const handleEditUser = (user) => {
-    setEditingUser(user)
-    setIsDialogOpen(true)
   }
 
   return (
@@ -45,10 +51,7 @@ export default function UserManagement() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-indigo-700">Gestión de Usuarios</h1>
         <button
-          onClick={() => {
-            setEditingUser(null)
-            setIsDialogOpen(true)
-          }}
+          onClick={() => setIsDialogOpen(true)}
           className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 flex items-center"
         >
           <PlusIcon className="w-5 h-5 mr-2" />
@@ -60,7 +63,7 @@ export default function UserManagement() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg w-full max-w-md">
             <h2 className="text-xl font-bold mb-4 text-indigo-700">
-              {editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
+              Crear Nuevo Usuario
             </h2>
             <form onSubmit={handleSaveUser} className="space-y-4">
               <div>
@@ -68,7 +71,25 @@ export default function UserManagement() {
                 <input
                   id="nombre"
                   name="nombre"
-                  defaultValue={editingUser?.nombre}
+                  required
+                  className="w-full border rounded px-3 py-2 text-gray-700"
+                />
+              </div>
+              <div>
+                <label htmlFor="nombre_usuario" className="block mb-1 text-gray-700">Nombre de Usuario</label>
+                <input
+                  id="nombre_usuario"
+                  name="nombre_usuario"
+                  required
+                  className="w-full border rounded px-3 py-2 text-gray-700"
+                />
+              </div>
+              <div>
+                <label htmlFor="contrasena" className="block mb-1 text-gray-700">Contraseña</label>
+                <input
+                  id="contrasena"
+                  name="contrasena"
+                  type="password"
                   required
                   className="w-full border rounded px-3 py-2 text-gray-700"
                 />
@@ -79,7 +100,6 @@ export default function UserManagement() {
                   id="correo"
                   name="correo"
                   type="email"
-                  defaultValue={editingUser?.correo}
                   required
                   className="w-full border rounded px-3 py-2 text-gray-700"
                 />
@@ -89,11 +109,14 @@ export default function UserManagement() {
                 <select
                   id="rol"
                   name="rol"
-                  defaultValue={editingUser?.rol || 'user'}
                   className="w-full border rounded px-3 py-2 text-gray-700"
+                  defaultValue="Estudiante" // Por defecto el rol será Estudiante
                 >
-                  <option value="admin">Administrador</option>
-                  <option value="user">Usuario</option>
+                  {ROLES.map((role) => (
+                    <option key={role.value} value={role.value}>
+                      {role.label}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="flex justify-end space-x-2">
@@ -108,7 +131,7 @@ export default function UserManagement() {
                   type="submit"
                   className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
                 >
-                  {editingUser ? 'Guardar Cambios' : 'Crear Usuario'}
+                  Crear Usuario
                 </button>
               </div>
             </form>
@@ -135,13 +158,13 @@ export default function UserManagement() {
               <td className="py-3 px-6 text-left">{user.rol}</td>
               <td className="py-3 px-6 text-center">
                 <button
-                  onClick={() => handleEditUser(user)}
+                  onClick={() => {}}
                   className="text-indigo-600 hover:text-indigo-900 mr-2"
                 >
                   <PencilIcon className="w-5 h-5" />
                 </button>
                 <button
-                  onClick={() => handleDeleteUser(user.id)}
+                  onClick={() => {}}
                   className="text-red-600 hover:text-red-900"
                 >
                   <TrashIcon className="w-5 h-5" />

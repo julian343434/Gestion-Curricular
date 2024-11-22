@@ -17,29 +17,45 @@ export default function Login() {
         e.preventDefault();
         setIsLoading(true);
 
-        // Comprobación de credenciales del administrador
-        if (username === "admin" && password === "admin") {
-            const adminJwt = "fake-jwt-for-admin"; // Aquí puedes crear un JWT ficticio si no estás usando uno real
-            localStorage.setItem('token', adminJwt);
-            localStorage.setItem('role', "admin");
-            localStorage.setItem('session', true);
-            setToken(adminJwt);
-            setUserRole("admin");
-            setSession(true)
-            setIsLoading(false);
-            navigate("/user-admin");
-            return;
-        }
+        try {
+            // Llama a la función GetAccessToken con el username y password
+            const jwtToken = await GetAccessToken({ username, password });
 
-        // Si no es admin, permite que inicie sesión con cualquier contraseña
-        const userJwt = "fake-jwt-for-user"; // JWT ficticio para usuarios normales
-        localStorage.setItem('token', userJwt);
-        localStorage.setItem('role', "user"); // Persistencia del rol para usuarios normales
-        setToken(userJwt);
-        setUserRole("user");
-        navigate("/home"); // Redirige a la ruta de usuarios normales
-        setIsLoading(false);
-        setSession(true);
+            if (jwtToken) {
+                // Si el JWT es exitoso, lo guardamos en localStorage y en el contexto
+                localStorage.setItem('token', jwtToken);
+
+                // Obtén el rol del usuario de la respuesta (esto debe ser parte de la respuesta del backend)
+                if (username != "admin"){
+                    var userRole = "user"; // O el rol que regrese el backend junto con el token
+                }
+
+                 userRole = "admin";
+                
+
+                // Guarda los datos en el contexto y en el almacenamiento local
+                localStorage.setItem('role', userRole);
+                localStorage.setItem('session', true);
+                setToken(jwtToken);
+                setUserRole(userRole);
+                setSession(true);
+
+                // Redirige según el rol del usuario
+                if (userRole === "admin") {
+                    navigate("/user-admin"); // Redirige al panel de administración
+                } else {
+                    navigate("/home"); // Redirige a la página de inicio para usuarios normales
+                }
+            } else {
+                // Si no se obtiene un JWT válido
+                alert("Credenciales incorrectas");
+            }
+        } catch (error) {
+            console.error("Error durante la autenticación:", error);
+            alert("Hubo un error al intentar iniciar sesión.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

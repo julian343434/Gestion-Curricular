@@ -11,7 +11,6 @@ const UserAdmin = () => {
 		switch (vistaActual) {
 			case 'GestionPlanEstudio':
 				return <StudyPlanManager />;
-				
 			case 'settings':
 				return <div>Configuración de usuario</div>;
 			case 'GestionUsuarios':
