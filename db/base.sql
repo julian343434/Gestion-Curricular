@@ -89,3 +89,5 @@ create table pertenece(
 );
 
 insert into rol (nombre) values ('Administrador'), ('Profesor de Comite'), ('Profesor'), ('Estudiante');
+insert into usuario (id_usuario, nombre, nombre_usuario, contrasena, correo, activo) values (0, 'Software1', 'Admin', '$2a$10$rRudbKUhoXlyylTFaBpOAuk6F/TIYfDp.NQ40f/fQXXZpNIXb3k9O', 'Admin@unillanos.edu.co', true);
+insert into presenta (id_rol, id_usuario, periodo, anio) values (1, 0, 2, 2022);
