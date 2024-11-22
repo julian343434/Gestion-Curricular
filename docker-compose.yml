@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  db:
+    build:
+      context: ./db
+    container_name: gestion_curricular_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: gestion_curricular
+      POSTGRES_USER: software1
+      POSTGRES_PASSWORD: software1
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  backend:
+    build:
+      context: ./BACKEND/demo
+      dockerfile: Dockerfile
+    container_name: gestion_curricular_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gestion_curricular
+      SPRING_DATASOURCE_USERNAME: software1
+      SPRING_DATASOURCE_PASSWORD: software1
+    networks:
+      - app_network
+
+  frontend:
+    build:
+      context: ./FRONTEND
+      dockerfile: Dockerfile
+    container_name: gestion_curricular_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+volumes:
+  db_data:
+
+networks:
+  app_network:
+    driver: bridge
