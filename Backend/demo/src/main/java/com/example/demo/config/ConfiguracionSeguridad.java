@@ -46,7 +46,7 @@ public class ConfiguracionSeguridad {
         CorsConfiguration configuration = new CorsConfiguration();
         // Aquí puedes agregar más orígenes si es necesario
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://otro-origen.com")); // Orígenes permitidos
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS" ,"PATCH")); // Métodos permitidos
         configuration.setAllowedHeaders(Arrays.asList("*")); // Permitir todos los encabezados
         configuration.setAllowCredentials(true); // Permitir credenciales (cookies, headers)
 
