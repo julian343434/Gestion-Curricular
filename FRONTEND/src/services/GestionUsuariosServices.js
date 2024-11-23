@@ -1,63 +1,51 @@
 
 import { BASE_URL } from "../environment";
 // Función para crear un nuevo usuario
-export const createUser = async ({ nombre, nombre_usuario, contrasena, correo, rol, periodo, anio }) => {
+export const createUser = async (userData) => {
+    const { nombre, nombre_usuario, contrasena, correo, rol, periodo, anio } = userData;
+
+    if (!nombre || !nombre_usuario || !contrasena || !correo || !rol || !periodo || !anio) {
+        throw new Error("Todos los campos son obligatorios para crear un usuario.");
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+        throw new Error("Token no encontrado. Por favor, inicia sesión.");
+    }
+
     try {
-        // Validar que los campos obligatorios estén presentes
-        if (!nombre || !nombre_usuario || !contrasena || !correo || !rol || !periodo || !anio) {
-            throw new Error("Todos los campos son obligatorios para crear un usuario.");
-        }
-
-        // Obtener el token desde localStorage
-        const token = localStorage.getItem("token");
-        if (!token) {
-            throw new Error("Token no encontrado. Por favor, inicia sesión.");
-        }
-
-        // Construcción de la URL y los encabezados
-        const url = `${BASE_URL}/usuario/guardar`;
-        const headers = {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-        };
-
-        // Cuerpo de la solicitud
-        const body = JSON.stringify({
-            usuario: {
-                nombre,
-                nombre_usuario,
-                contrasena,
-                correo,
-                activo: true,
-            },
-            rol,
-            periodo,
-            anio,
-        });
-
-        // Hacer la solicitud a la API
-        const response = await fetch(url, {
+        const response = await fetch(`${BASE_URL}/usuario/guardar`, {
             method: "POST",
-            headers,
-            body,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                usuario: {
+                    nombre,
+                    nombre_usuario,
+                    contrasena,
+                    correo,
+                    activo: true,
+                },
+                rol,
+                periodo,
+                anio,
+            }),
         });
 
-        console.log("Respuesta del servidor:", response);
-
-        // Manejo de errores en la respuesta HTTP
         if (!response.ok) {
-            const errorMessage = await response.text();
-            throw new Error(`Error al crear el usuario: ${response.status} - ${errorMessage}`);
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Error desconocido al crear el usuario.");
         }
 
-        // Procesar y devolver la respuesta en formato JSON
-        const data = await response.json(); // Procesa el cuerpo de la respuesta
-        return data; // Devuelve el objeto del usuario creado
+        return await response.json();
     } catch (error) {
-        console.error("Error creando el usuario:", error.message);
-        throw error; // Re-lanzar el error para manejarlo en el nivel superior
+        console.error("Error en createUser:", error);
+        throw error;
     }
 };
+
 
 
 // Función para obtener usuarios
@@ -150,14 +138,29 @@ export async function activarUsuario(userId, token) {
      throw error; // Lanza el error para que el componente lo maneje
    }
  }
- 
+
  // services/GestionUsuariosServices.js
 
-export const actualizarRolUsuario = async (userId, { rol, periodo, anio }) => {
+ export const actualizarRolUsuario = async (userId, { rol, periodo, anio }) => {
     try {
         // Validar que los campos obligatorios estén presentes
         if (!rol || !periodo || !anio) {
             throw new Error("Todos los campos son obligatorios para actualizar el rol del usuario.");
+        }
+
+        // Asegurar que userId sea un número
+        const userIdNumber = Number(userId);
+        if (isNaN(userIdNumber)) {
+            throw new Error("El userId debe ser un número válido.");
+        }
+
+        // Asegurar que periodo y anio sean números
+        const periodoNumber = Number(periodo);
+        const anioNumber = Number(anio);
+        
+        // Verificar si los valores convertidos son números válidos
+        if (isNaN(periodoNumber) || isNaN(anioNumber)) {
+            throw new Error("El periodo y el año deben ser números válidos.");
         }
 
         // Obtener el token desde localStorage
@@ -167,14 +170,18 @@ export const actualizarRolUsuario = async (userId, { rol, periodo, anio }) => {
         }
 
         // Construcción de la URL y los encabezados
-        const url = `${BASE_URL}/usuario/${userId}`;
+        const url = `${BASE_URL}/usuario/${userIdNumber}`;
         const headers = {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
         };
 
-        // Cuerpo de la solicitud
-        const body = JSON.stringify({ rol, periodo, anio });
+        // Cuerpo de la solicitud con los valores asegurados como números
+        const body = JSON.stringify({
+            rol,
+            periodo: periodoNumber,
+            anio: anioNumber,
+        });
 
         // Hacer la solicitud a la API
         const response = await fetch(url, {
