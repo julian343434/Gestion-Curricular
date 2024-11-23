@@ -9,45 +9,70 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
-@Component
+@Component // Marca la clase como un componente gestionado por Spring
 public class JwtUtil {
 
+    // Clave secreta generada automáticamente para firmar los tokens JWT
     private final Key llaveSecreta = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public String generarToken(String usuario, String rol){
-
+    /**
+     * Genera un token JWT para un usuario específico con un rol asociado.
+     *
+     * @param usuario El nombre del usuario.
+     * @param rol El rol asignado al usuario.
+     * @return El token JWT generado.
+     */
+    public String generarToken(String usuario, String rol) {
         return Jwts.builder()
-                .setSubject(usuario)
-                .claim("rol", rol)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 3600000))
-                .signWith(llaveSecreta, SignatureAlgorithm.HS256)
+                .setSubject(usuario) // Establece el usuario como el sujeto del token
+                .claim("rol", rol) // Agrega un atributo de rol al token
+                .setIssuedAt(new Date()) // Establece la fecha de emisión
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // Define una expiración (1 hora)
+                .signWith(llaveSecreta, SignatureAlgorithm.HS256) // Firma el token con la clave secreta
                 .compact();
     }
 
+    /**
+     * Extrae el nombre de usuario del token JWT.
+     *
+     * @param token El token JWT del cual extraer el usuario.
+     * @return El nombre del usuario contenido en el token.
+     */
+    
     public String estraerUsuario(String token) {
-
-        return Jwts.parserBuilder() // Usa parserBuilder en lugar de parser
-                .setSigningKey(llaveSecreta) // Configura la clave secreta como objeto Key
-                .build() // Construye el parser
-                .parseClaimsJws(token) // Parse el token
+        return Jwts.parserBuilder()
+                .setSigningKey(llaveSecreta) // Configura la clave secreta para desencriptar
+                .build()
+                .parseClaimsJws(token) // Parse el token JWT
                 .getBody()
-                .getSubject(); // Extrae el "subject" (en este caso, el username)
+                .getSubject(); // Obtiene el sujeto (nombre de usuario)
     }
 
+    /**
+     * Valida si un token JWT es válido y no ha expirado.
+     *
+     * @param token El token JWT a validar.
+     * @return `true` si el token es válido; de lo contrario, `false`.
+     */
     public boolean validarToken(String token) {
-
         try {
+            // Intenta desencriptar el token para validar su firma y estructura
             Jwts.parserBuilder()
-                .setSigningKey(llaveSecreta) // Configura la clave secreta como Key
+                .setSigningKey(llaveSecreta)
                 .build()
-                .parseClaimsJws(token); // Valida el token
-            return true; // Token válido
+                .parseClaimsJws(token);
+            return true; // El token es válido
         } catch (Exception e) {
-            return false; // Token inválido
+            return false; // El token es inválido
         }
     }
 
-    public Key getLLaveSecreta() { return llaveSecreta; }
-    
+    /**
+     * Devuelve la clave secreta utilizada para firmar y validar los tokens JWT.
+     *
+     * @return La clave secreta.
+     */
+    public Key getLLaveSecreta() {
+        return llaveSecreta;
+    }
 }

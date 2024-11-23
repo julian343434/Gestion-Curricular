@@ -1,4 +1,5 @@
-package com.example.demo.modelo.entidades;
+package com.example.demo.modelo.usuarios.entidades;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,26 +11,28 @@ import jakarta.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(name = "usuario")
+@Table(name = "usuario") // Tabla asociada para la entidad de usuarios
 public class UsuarioEntidad {
    
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_usuario;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Clave primaria generada automáticamente
+    private Long id_usuario; // Identificador único del usuario
     
-    private String nombre;
-    @Column(name = "nombre_usuario", unique = true, nullable = false)
-    private String nombreUsuario;
+    private String nombre; // Nombre completo del usuario
+
+    @Column(name = "nombre_usuario", unique = true, nullable = false, columnDefinition = "varchar(30)") 
+    private String nombreUsuario; // Nombre de usuario único para inicio de sesión
+
     @Column(unique = true, nullable = false)
-    private String contrasena;
-    private String correo;
-    private boolean activo;
+    private String contrasena; // Contraseña del usuario
 
-    @OneToMany(mappedBy = "usuario")
-    private List<PresentaEntidad> roles;
+    private String correo; // Correo electrónico del usuario
+    private boolean activo; // Estado del usuario (activo/inactivo)
 
-    // Constructor, getters, y setters
-    
+    @OneToMany(mappedBy = "usuario") // Relación uno a muchos con PresentaEntidad
+    private List<PresentaEntidad> roles; // Lista de roles asociados al usuario
+
+    // Constructor, getters y setters
     public UsuarioEntidad() {}
     
     public UsuarioEntidad(String nombre, String nombre_usuario, String contrasena, String correo, boolean activo) {
@@ -46,8 +49,8 @@ public class UsuarioEntidad {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getnombreUsuario() { return nombreUsuario; }
-    public void setnombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
 
     public String getContrasena() { return contrasena; }
     public void setContrasena(String contrasena) { this.contrasena = contrasena; }
@@ -61,4 +64,3 @@ public class UsuarioEntidad {
     public List<PresentaEntidad> getRol() { return roles; }
     public void setRol(List<PresentaEntidad> roles) { this.roles = roles; }
 }
-

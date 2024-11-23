@@ -1,26 +1,28 @@
-package com.example.demo.modelo.entidades;
+package com.example.demo.modelo.usuarios.entidades;
+
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Embeddable
+@Embeddable // Indica que esta clase se usará como clave embebida en otra entidad
 public class PresentaIdEntidad implements Serializable {
     
-    private Long id_rol;
+    private Long id_rol; // Identificador del rol
     @JsonIgnore
-    private Long id_usuario;
-    private int periodo;
-    private int anio;
+    private Long id_usuario; // Identificador del usuario
+    private int periodo; // Periodo asociado
+    private int anio; // Año asociado
 
     public PresentaIdEntidad() {}
-    public PresentaIdEntidad(Long id_rol, Long id_usuario,  int periodo, int anio) {
-        this.id_rol =  id_rol;
-        this.id_usuario =  id_usuario;
+
+    public PresentaIdEntidad(Long id_rol, Long id_usuario, int periodo, int anio) {
+        this.id_rol = id_rol;
+        this.id_usuario = id_usuario;
         this.periodo = periodo;
         this.anio = anio;
     }
 
+    // Métodos getter y setter
     public Long getId_rol() { return id_rol; }
     public void setId_rol(Long id_rol) { this.id_rol = id_rol; }
 
@@ -33,7 +35,7 @@ public class PresentaIdEntidad implements Serializable {
     public int getAnio() { return anio; }
     public void setAnio(int anio) { this.anio = anio; }
 
-    // hashCode y equals (requeridos para que JPA maneje la clave compuesta)
+    // Métodos hashCode y equals para manejar la clave compuesta
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,7 +47,6 @@ public class PresentaIdEntidad implements Serializable {
         if (anio != that.anio) return false;
         if (!id_usuario.equals(that.id_usuario)) return false;
         return id_rol.equals(that.id_rol);
-
     }
 
     @Override

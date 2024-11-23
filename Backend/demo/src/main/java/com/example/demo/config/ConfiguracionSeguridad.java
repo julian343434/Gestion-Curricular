@@ -12,54 +12,78 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.http.HttpMethod; // Importación agregada
+import org.springframework.http.HttpMethod;
 
 import com.example.demo.util.JwtAuthenticationFilter;
 
 import java.util.Arrays;
 
-@Configuration
+@Configuration // Define esta clase como una configuración de Spring
 public class ConfiguracionSeguridad {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    // Constructor que inyecta el filtro de autenticación JWT
     public ConfiguracionSeguridad(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    /**
+     * Configura la cadena de filtros de seguridad para las solicitudes HTTP.
+     *
+     * @param http Objeto HttpSecurity para configurar la seguridad.
+     * @return Una instancia de SecurityFilterChain.
+     * @throws Exception Si ocurre un error al configurar la seguridad.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilitar CORS
+        http.csrf(csrf -> csrf.disable()) // Desactiva CSRF para simplificar solicitudes desde frontend
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilita CORS con configuración personalizada
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/usuario/**").hasRole("Administrador") // Requiere rol ADMIN
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permitir OPTIONS
-                .anyRequest().permitAll() // Todas las demás no requieren autenticación
+                .requestMatchers("/usuario/**").hasRole("Administrador") // Protege rutas de usuario con el rol ADMIN
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permite solicitudes OPTIONS (preflight CORS)
+                .anyRequest().permitAll() // Permite todas las demás solicitudes sin autenticación
             )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Agrega el filtro JWT
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Agrega el filtro JWT antes del filtro de autenticación predeterminado
 
         return http.build();
     }
 
+    /**
+     * Configuración de CORS para permitir solicitudes desde dominios específicos.
+     *
+     * @return Una configuración de fuente CORS personalizada.
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Aquí puedes agregar más orígenes si es necesario
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://otro-origen.com")); // Orígenes permitidos
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS" ,"PATCH")); // Métodos permitidos
-        configuration.setAllowedHeaders(Arrays.asList("*")); // Permitir todos los encabezados
-        configuration.setAllowCredentials(true); // Permitir credenciales (cookies, headers)
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); // Métodos permitidos
+        configuration.setAllowedHeaders(Arrays.asList("*")); // Permite todos los encabezados
+        configuration.setAllowCredentials(true); // Permite credenciales como cookies y headers
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Aplicar configuración a todas las rutas
+        source.registerCorsConfiguration("/**", configuration); // Aplica la configuración a todas las rutas
         return source;
     }
 
+    /**
+     * Define el bean para el codificador de contraseñas, usando BCrypt.
+     *
+     * @return Un codificador de contraseñas BCrypt.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Define el bean para el administrador de autenticación.
+     *
+     * @param configuration Configuración de autenticación de Spring Security.
+     * @return Una instancia de AuthenticationManager.
+     * @throws Exception Si ocurre un error al obtener el administrador de autenticación.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();

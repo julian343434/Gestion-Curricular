@@ -58,10 +58,15 @@ create table comentario(
 --se guardan los cursos que son creados con el plan de estudio
 create table curso(
     id_curso serial primary key,
-    nombre varchar(20),
-    creditos integer check (creditos > 0 and creditos <= 4), --no permite que los créditos sean mayores a 4 ni menores que 1
     semestre integer check (semestre > 0 and semestre <= 10), --no permite que el semestre pase de 10 ni que baje de 1
-    tipo varchar(2)
+    nombre varchar(20),
+    obligatorio boolean,
+    creditos integer check (creditos > 0 and creditos <= 4), --no permite que los créditos sean mayores a 4 ni menores que 1
+    relacion varchar(4),
+    tipo varchar(2),
+    horas_de_trabajo integer,
+    area_de_formacion varchar(20),
+    max_estudiantes integer
 );
 
 --se relacionan los microcurrículos con los cursos
