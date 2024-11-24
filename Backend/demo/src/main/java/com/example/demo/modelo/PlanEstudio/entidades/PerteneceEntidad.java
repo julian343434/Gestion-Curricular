@@ -31,12 +31,19 @@ public class PerteneceEntidad {
     private PlanEstudioEntidad planEstudio;
 
     public PerteneceEntidad() {}
+    public PerteneceEntidad(PerteneceIdEntidad id, int anio) {
+        this.id = id;
+        this.anio = anio;
+    }
     
     public PerteneceIdEntidad getId() { return id; }
     public void setId(PerteneceIdEntidad id) { this.id = id; }
 
     public CursoEntidad getCurso() { return curso; }
     public void setCurso(CursoEntidad curso) { this.curso = curso; }
+
+    public PlanEstudioEntidad getPlanEstudio() { return planEstudio; }
+    public void setPlanEstudio(PlanEstudioEntidad planEstudio) { this.planEstudio = planEstudio; }
 
     public int getAnio() { return anio; }
     public void setAnio(int anio) { this.anio = anio; }

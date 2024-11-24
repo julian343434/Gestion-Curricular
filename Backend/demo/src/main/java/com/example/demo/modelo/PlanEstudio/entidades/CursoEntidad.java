@@ -38,8 +38,7 @@ public class CursoEntidad {
     private List<PerteneceEntidad> planEstudio;
 
     public CursoEntidad() {}
-    public CursoEntidad(Long id_curso, 
-                int semestre, 
+    public CursoEntidad(int semestre, 
                 String nombre, 
                 boolean obligatorio, 
                 int creditos, 
@@ -47,8 +46,8 @@ public class CursoEntidad {
                 String tipo,
                 int horasDeTrabajo,
                 String areaDeFromacion,
-                int maxEstudiantes){
-                    this.id_curso = id_curso;
+                int maxEstudiantes,
+                List<PerteneceEntidad> planEstudio){
                     this.semestre = semestre;
                     this.obligatorio = obligatorio;
                     this.creditos = creditos;
@@ -57,6 +56,7 @@ public class CursoEntidad {
                     this.horasDeTrabajo = horasDeTrabajo;
                     this.areaDeFormacion = areaDeFromacion;
                     this.maxEstudiantes = maxEstudiantes;
+                    this.planEstudio = planEstudio;
                 }
 
     

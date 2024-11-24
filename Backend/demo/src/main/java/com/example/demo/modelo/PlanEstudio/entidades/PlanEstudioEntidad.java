@@ -31,11 +31,11 @@ public class PlanEstudioEntidad {
     private List<PerteneceEntidad> cursos;
 
     public PlanEstudioEntidad() {}
-    public PlanEstudioEntidad(Long id_plan_estudio, byte[] archivo, String descripcion, String nombre) {
-        this.id_plan_estudio = id_plan_estudio;
+    public PlanEstudioEntidad(byte[] archivo, String descripcion, String nombre, List<PerteneceEntidad> cursos) {
         this.archivo = archivo;
         this.descripcion = descripcion;
         this.nombre = nombre;
+        this.cursos = cursos;
     }
 
     public Long getId_plan_estudio() { return id_plan_estudio; }

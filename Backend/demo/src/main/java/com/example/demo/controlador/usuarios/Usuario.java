@@ -39,6 +39,7 @@ public class Usuario {
      * @return Lista de usuarios.
      */
     @GetMapping("/")
+    @PreAuthorize("hasRole('Administrador')") 
     public List<UsuarioEntidad> obetenerUsuarios() {
         return usuarioServicio.obtenerUsuarios();
     }
@@ -81,7 +82,7 @@ public class Usuario {
      */
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('Administrador')") // Restringe el acceso solo a usuarios con rol de Administrador
-    public UsuarioEntidad actuliazrUsuario(@PathVariable Long id, @RequestBody Map<String, Object> campos){
+    public UsuarioEntidad actulizarUsuario(@PathVariable Long id, @RequestBody Map<String, Object> campos){
 
         UsuarioEntidad usuario = usuarioServicio.obtenerUsuario(id);
 
