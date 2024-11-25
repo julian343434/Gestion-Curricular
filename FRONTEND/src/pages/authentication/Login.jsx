@@ -16,35 +16,40 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-
+    
         try {
             // Llama a la función GetAccessToken con el username y password
-            const jwtToken = await GetAccessToken({ username, password });
-
-            if (jwtToken) {
-                // Si el JWT es exitoso, lo guardamos en localStorage y en el contexto
-                localStorage.setItem('token', jwtToken);
-
-                // Obtén el rol del usuario de la respuesta (esto debe ser parte de la respuesta del backend)
-                if (username != "admin"){
-                    var userRole = "user"; // O el rol que regrese el backend junto con el token
-                }
-
-                 userRole = "admin";
-                
-
-                // Guarda los datos en el contexto y en el almacenamiento local
-                localStorage.setItem('role', userRole);
-                localStorage.setItem('session', true);
-                setToken(jwtToken);
+            const { token, payload } = await GetAccessToken({ username, password });
+    
+            if (token) {
+                // Guarda el token en localStorage y en el contexto
+                localStorage.setItem("token", token);
+    
+                // Obtiene el rol del usuario desde la payload del JWT
+                const userRole = payload?.rol || "Estudiante"; // Por defecto, Estudiante
+    
+                // Guarda el rol, sesión y token en el almacenamiento local y contexto
+                localStorage.setItem("role", userRole);
+                localStorage.setItem("session", true);
+                setToken(token);
                 setUserRole(userRole);
                 setSession(true);
-
+    
                 // Redirige según el rol del usuario
-                if (userRole === "admin") {
-                    navigate("/user-admin"); // Redirige al panel de administración
-                } else {
-                    navigate("/home"); // Redirige a la página de inicio para usuarios normales
+                switch (userRole) {
+                    case "Administrador":
+                        navigate("/user-admin");
+                        break;
+                    case "Profesor de Comite":
+                        navigate("/comite");
+                        break;
+                    case "Profesor":
+                        navigate("/profesor");
+                        break;
+                    case "Estudiante":
+                    default:
+                        navigate("/home");
+                        break;
                 }
             } else {
                 // Si no se obtiene un JWT válido
@@ -57,6 +62,7 @@ export default function Login() {
             setIsLoading(false);
         }
     };
+    
 
     return (
 
