@@ -18,7 +18,7 @@ services:
 
   backend:
     build:
-      context: ./BACKEND/demo
+      context: ./Backend/demo
       dockerfile: Dockerfile
     container_name: gestion_curricular_app
     ports:
