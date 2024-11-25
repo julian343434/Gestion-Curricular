@@ -1,11 +1,24 @@
-# Usar una imagen base de Java para ejecutar la aplicación
+# Etapa 1: Compilación
+FROM maven:3.8.8-eclipse-temurin-17 AS builder
+
+# Establecer el directorio de trabajo
+WORKDIR /app
+
+# Copiar los archivos del proyecto al contenedor
+COPY pom.xml .
+COPY src ./src
+
+# Ejecutar Maven para compilar el proyecto y empaquetar el archivo JAR
+RUN mvn clean package -DskipTests
+
+# Etapa 2: Ejecución
 FROM openjdk:17-jdk-slim
 
 # Crear un directorio para la aplicación
 WORKDIR /app
 
-# Copiar el archivo JAR generado por Maven al contenedor
-COPY target/demo-0.0.1-SNAPSHOT.jar app.jar
+# Copiar el archivo JAR desde la etapa de compilación
+COPY --from=builder /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
 
 # Exponer el puerto en el que se ejecutará la aplicación
 EXPOSE 8080
