@@ -23,9 +23,14 @@ import com.example.demo.modelo.PlanEstudio.entidades.PerteneceEntidad;
 import com.example.demo.modelo.PlanEstudio.entidades.PlanEstudioEntidad;
 import com.example.demo.modelo.PlanEstudio.servicios.PerteneceServicio;
 import com.example.demo.modelo.PlanEstudio.servicios.PlanEstudioServicio;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -49,7 +54,14 @@ public class PlanEstudio {
         return cursoServicio.ObtenerCurso();
     }
 
+    @GetMapping("/planEstudio")
+    @PreAuthorize("hasRole('Administrador')") 
+    public List<PlanEstudioEntidad> obenerPlanEstudio(){
+        return planEstudioServicio.ObtenerPlanEstudio();
+    }
+
     @PostMapping("/guardarArchivo")
+    @PreAuthorize("hasRole('Administrador')") 
     public List<CursoEntidad> manejoArchivo(@RequestParam("file") MultipartFile archivo,
                                         @RequestParam("nombre") String nombre,
                                         @RequestParam("descripcion") String descripcion,
@@ -106,7 +118,7 @@ public class PlanEstudio {
             }
 
             // Guardar relaciones
-            perteneceServicio.guardarRelacion(relaciones);
+            perteneceServicio.guardarRelacionArchivo(relaciones);
 
             // Devolver la lista de cursos creados
             return cursos;
@@ -115,6 +127,63 @@ public class PlanEstudio {
             throw new RuntimeException("Error al procesar el archivo: " + e.getMessage(), e);
         }
     }
+    
+    @PostMapping("/guardarCurso")
+    @PreAuthorize("hasRole('Administrador')") 
+    public CursoEntidad crearCurso(@RequestBody Map<String, Object> datos) {
+        
+        PlanEstudioEntidad planEstudioEntidad = planEstudioServicio.buscarId(((Number) datos.get("planEstudio")).longValue());
+
+        datos.remove("planEstudio");
+
+        int anio = (int) datos.get("anio");
+
+        CursoEntidad cursoEntidad = cursoServicio.crearCurso(datos);
+
+        PerteneceEntidad perteneceEntidad = perteneceServicio.crearRelacion(planEstudioEntidad.getId_plan_estudio(), cursoEntidad.getId_curso(), anio);
+
+        perteneceEntidad.setCurso(cursoEntidad);
+        perteneceEntidad.setPlanEstudio(planEstudioEntidad);
+
+        perteneceServicio.guardarRelacion(perteneceEntidad);
+
+        cursoEntidad.getplanEstudio().add(perteneceEntidad);
+        
+        planEstudioEntidad.getCursos().add(perteneceEntidad);
+
+        return cursoEntidad;
+    }
+    
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('Administrador')") // Restringe el acceso solo a usuarios con rol de Administrador
+    public CursoEntidad actulizarCurso(@PathVariable Long id, @RequestBody Map<String, Object> campos){
+
+        CursoEntidad curso = cursoServicio.obtenerCursoId(id);
+
+        if(campos.containsKey("planEstudio")){
+            PlanEstudioEntidad planEstudioEntidad = planEstudioServicio.buscarId(((Number) campos.get("planEstudio")).longValue());
+            if(!campos.containsKey("anio")){
+                throw new RuntimeException("Informacion insuficiente para cambiar el plan de estudio falta anio");
+            }
+            PerteneceEntidad perteneceEntidad = perteneceServicio.crearRelacion(planEstudioEntidad.getId_plan_estudio(), id, (int) campos.get("anio"));
+
+            campos.remove("planEstudio");
+            campos.remove("anio");
+
+            perteneceEntidad.setPlanEstudio(planEstudioEntidad);
+            perteneceEntidad.setCurso(curso);
+
+            curso.getplanEstudio().add(perteneceEntidad);
+            perteneceServicio.guardarRelacion(perteneceEntidad);
+        }
+
+        if(!campos.isEmpty()){
+            cursoServicio.actulizarCurso(curso, campos);
+        }
+        
+        return curso;
+    }
+
     // Método de validación
     private void validarSiEsExcel(MultipartFile archivo) {
         String tipoContenido = archivo.getContentType();

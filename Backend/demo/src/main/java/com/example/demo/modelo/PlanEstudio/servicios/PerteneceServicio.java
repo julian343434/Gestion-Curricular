@@ -21,16 +21,24 @@ public class PerteneceServicio {
         List<PerteneceEntidad> relacion = new ArrayList<>();
 
         for (Long curso : id_curso) {
-            relacion.add(perteneceRepositorio.save(new PerteneceEntidad(new PerteneceIdEntidad(id_plan_estudio, curso), anio)));
+            relacion.add(new PerteneceEntidad(new PerteneceIdEntidad(id_plan_estudio, curso), anio));
         }
 
         return relacion;
     }
 
-    public void guardarRelacion(List<PerteneceEntidad> relaciones){
+    public PerteneceEntidad crearRelacion(Long id_plan_estudio, Long id_curso, int anio){
+        return new PerteneceEntidad(new PerteneceIdEntidad(id_plan_estudio, id_curso), anio);
+    }
+
+    public void guardarRelacionArchivo(List<PerteneceEntidad> relaciones){
         for (PerteneceEntidad perteneceEntidad : relaciones) {
             perteneceRepositorio.save(perteneceEntidad);
         }
+    }
+
+    public void guardarRelacion(PerteneceEntidad relacion){
+        perteneceRepositorio.save(relacion);
     }
 
 }

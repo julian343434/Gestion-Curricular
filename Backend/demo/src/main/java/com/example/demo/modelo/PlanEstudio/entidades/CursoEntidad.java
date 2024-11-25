@@ -19,7 +19,6 @@ public class CursoEntidad {
     private Long id_curso;
 
     private int semestre; // Semestre en el que se imparte el curso
-    @Column(length = 20)
     private String nombre; // Nombre del curso
     private boolean obligatorio; // Indica si el curso es obligatorio
     private int creditos; // Créditos del curso
@@ -34,6 +33,7 @@ public class CursoEntidad {
     @Column(name = "max_estudiantes")
     private int maxEstudiantes; // Número máximo de estudiantes permitidos
 
+    
     @OneToMany(mappedBy = "curso") // Relación uno a muchos con `PerteneceEntidad`
     private List<PerteneceEntidad> planEstudio;
 

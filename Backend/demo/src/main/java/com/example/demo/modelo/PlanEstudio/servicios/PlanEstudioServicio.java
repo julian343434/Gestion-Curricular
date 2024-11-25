@@ -1,6 +1,7 @@
 package com.example.demo.modelo.PlanEstudio.servicios;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,19 @@ public class PlanEstudioServicio {
 
     @Autowired
     PlanEstudioRepositorio planEstudioRepositorio;
+
+
+    public List<PlanEstudioEntidad> ObtenerPlanEstudio(){
+          List<PlanEstudioEntidad> planEstudio = planEstudioRepositorio.findAll();
+        if(planEstudio.isEmpty()){
+            throw new RuntimeException("Sin planEstudio registrados");
+        }
+        return planEstudio;
+    }
+
+    public PlanEstudioEntidad buscarId(Long id){
+        return planEstudioRepositorio.findById(id).orElseThrow(() -> new RuntimeException("plan de estudios no encontrado"));
+    }
 
     public PlanEstudioEntidad guardarPlanEstudio(Map<String, Object> datos){
         if (!(datos.get("archivo") instanceof byte[])) {

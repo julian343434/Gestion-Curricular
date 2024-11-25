@@ -2,12 +2,13 @@ package com.example.demo.modelo.PlanEstudio.entidades;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-//import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -20,13 +21,14 @@ public class PlanEstudioEntidad {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_plan_estudio;
 
-    //@Lob // Almacena datos binarios grandes, como archivos
+    @JsonIgnore // Almacena datos binarios grandes, como archivos
     @Column(name = "archivo", columnDefinition = "bytea")
     private byte[] archivo; // Archivo asociado al plan de estudio
 
     private String descripcion; // Descripción del plan de estudio
     private String nombre; // Nombre del plan de estudio
-
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "planEstudio") // Relación uno a muchos con cursos
     private List<PerteneceEntidad> cursos;
 

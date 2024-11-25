@@ -26,7 +26,7 @@ public class CursoServicio {
     static{
         numerosRomanos.put('I', 1);
         numerosRomanos.put('V', 5);
-        numerosRomanos.put('x', 10);
+        numerosRomanos.put('X', 10);
     }
     
     // Obtiene todos los cursos registrados
@@ -48,7 +48,7 @@ public class CursoServicio {
 
         Map<String, Object> datos = new HashMap<>();
 
-        for (int i = 4; i <= hoja.getLastRowNum(); i++){
+        for (int i = 4; i < hoja.getLastRowNum(); i++){
             Row fila = hoja.getRow(i);
 
             if(fila == null){
@@ -126,7 +126,13 @@ public class CursoServicio {
     private String obtenerString(Map<String, Object> datos, String clave, String valorPorDefecto) {
         Object valor = datos.getOrDefault(clave, valorPorDefecto);
         if (valor instanceof String) {
-            return (String) valor;
+
+            String texto = (String) valor;
+             // Verifica y elimina comillas dobles solo si están al inicio y al final
+            if (texto.startsWith("\"") && texto.endsWith("\"")) {
+                return texto.substring(1, texto.length() - 1);
+            }
+            return texto;
         }
         return valorPorDefecto;
     }
@@ -170,7 +176,7 @@ public class CursoServicio {
     }
 
     // Actualiza los datos de un usuario
-    public void actulizarUsuario(CursoEntidad curso, Map<String, Object> campos){
+    public void actulizarCurso(CursoEntidad curso, Map<String, Object> campos){
         campos.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(CursoEntidad.class, key);
             if(field != null){
@@ -215,6 +221,9 @@ public class CursoServicio {
     }
 
     public int semestre(String semestre){
+        if(semestre.contains("Total")){
+            return 0;
+        }
         semestre = semestre.replace("Semestre ", "");
 
         int resultado = 0;
