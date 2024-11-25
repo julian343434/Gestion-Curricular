@@ -17,9 +17,8 @@ public class PlanEstudioServicio {
 
     public PlanEstudioEntidad guardarPlanEstudio(Map<String, Object> datos){
         if (!(datos.get("archivo") instanceof byte[])) {
-            throw new RuntimeException("El valor de 'archivo' no es del tipo esperado byte[].");
+            throw new RuntimeException("El valor de 'archivo' no es del tipo esperado byte[]." + datos.get("archivo").getClass().getName());
         }
-        System.out.println(datos.get("archivo").getClass().getName());
 
         return planEstudioRepositorio.save(new PlanEstudioEntidad((byte[]) datos.get("archivo"),
                                                                     (String) datos.get("descripcion"),

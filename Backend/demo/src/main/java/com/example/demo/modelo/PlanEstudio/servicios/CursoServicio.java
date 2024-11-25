@@ -48,7 +48,7 @@ public class CursoServicio {
 
         Map<String, Object> datos = new HashMap<>();
 
-        for (int i = 4; i <= hoja.getLastRowNum(); i++){
+        for (int i = 5; i <= hoja.getLastRowNum(); i++){
             Row fila = hoja.getRow(i);
 
             if(fila == null){
@@ -57,48 +57,102 @@ public class CursoServicio {
             if(esCombinada(hoja, fila.getCell(0))){
                 datos.put("semestre", semestre(getVarlorCombinada(hoja, fila.getCell(0))));
             }else{
-                if(fila.getCell(0).getStringCellValue().contains("Total")){
+                if (fila.getCell(0).getStringCellValue().contains("Total")) {
                     continue;
                 }
-                datos.put("nombre", fila.getCell(0).getStringCellValue());
-                
-                if(fila.getCell(1).getStringCellValue().trim().isEmpty()){
-                    datos.put("obligatorio", false);
-                }else{
-                    datos.put("obligatorio", true);
-                }
-                datos.put("cretidos", fila.getCell(3).getNumericCellValue());
-                datos.put("relacion", fila.getCell(4).getStringCellValue());
-                datos.put("tipo", fila.getCell(5).getStringCellValue());
-                datos.put("horasDeTrabajo", fila.getCell(6).getNumericCellValue());
-                if(!fila.getCell(9).getStringCellValue().trim().isEmpty()){
+                datos.put("nombre", getCellValue(fila.getCell(0)));
+        
+                datos.put("obligatorio", fila.getCell(1) == null || getCellValue(fila.getCell(1)).toString().trim().isEmpty() ? false : true);
+        
+                datos.put("creditos", getCellValue(fila.getCell(3)));
+                datos.put("relacion", getCellValue(fila.getCell(4)));
+                datos.put("tipo", getCellValue(fila.getCell(5)));
+                datos.put("horasDeTrabajo", getCellValue(fila.getCell(6)));
+        
+                if (!getCellValue(fila.getCell(9)).toString().trim().isEmpty()) {
                     datos.put("areaDeFormacion", "Basica");
-                }else if (!fila.getCell(10).getStringCellValue().trim().isEmpty()) {
+                } else if (!getCellValue(fila.getCell(10)).toString().trim().isEmpty()) {
                     datos.put("areaDeFormacion", "Especifica");
-                }else if (!fila.getCell(11).getStringCellValue().trim().isEmpty()) {
+                } else if (!getCellValue(fila.getCell(11)).toString().trim().isEmpty()) {
                     datos.put("areaDeFormacion", "Investigacion");
-                }else if (!fila.getCell(12).getStringCellValue().trim().isEmpty()) {
+                } else if (!getCellValue(fila.getCell(12)).toString().trim().isEmpty()) {
                     datos.put("areaDeFormacion", "Complementaria");
                 }
-                datos.put("maxEstudiantes", fila.getCell(13));
+        
+                datos.put("maxEstudiantes", getCellValue(fila.getCell(13)));
+        
+                // Guardar la entidad Curso
+                cursos.add(cursoRepositorio.save(new CursoEntidad(
+                    obtenerEntero(datos, "semestre", 1),       // Convierte seguro a Integer
+                    obtenerString(datos, "nombre", "Sin nombre"), // Convierte seguro a String
+                    obtenerBooleano(datos, "obligatorio", false), // Convierte seguro a Boolean
+                    obtenerEntero(datos, "creditos", 1),          // Convierte seguro a Integer
+                    obtenerString(datos, "relacion", ""),         // Convierte seguro a String
+                    obtenerString(datos, "tipo", ""),             // Convierte seguro a String
+                    obtenerEntero(datos, "horasDeTrabajo", 0),    // Convierte seguro a Integer
+                    obtenerString(datos, "areaDeFormacion", ""),  // Convierte seguro a String
+                    obtenerEntero(datos, "maxEstudiantes", 0),    // Convierte seguro a Integer
+                    new ArrayList<>()
+                )));
 
-                cursos.add(cursoRepositorio.save(new CursoEntidad((int) datos.get("semestre"),
-                                            (String) datos.get("nombre"),
-                                            (boolean) datos.get("obligatorio"),
-                                            (int) datos.get("creditos"),
-                                            (String) datos.get("relacion"),
-                                            (String) datos.get("tipo"),
-                                            (int) datos.get("horasDeTrabajo"),
-                                            (String) datos.get("areaDeFromacion"),
-                                            (int) datos.get("maxEstudiantes"),
-                                            new ArrayList<>())));
+                
             }
 
         }
 
         return cursos;
     }
+    
+    private Integer obtenerEntero(Map<String, Object> datos, String clave, Integer valorPorDefecto) {
+        Object valor = datos.getOrDefault(clave, valorPorDefecto);
+        if (valor instanceof Integer) {
+            return (Integer) valor;
+        } else if (valor instanceof Double) {
+            return ((Double) valor).intValue(); // Convierte Double a Integer
+        }
+        return valorPorDefecto;
+    }
+    
+    private Boolean obtenerBooleano(Map<String, Object> datos, String clave, Boolean valorPorDefecto) {
+        Object valor = datos.getOrDefault(clave, valorPorDefecto);
+        if (valor instanceof Boolean) {
+            return (Boolean) valor;
+        }
+        return valorPorDefecto;
+    }
+    
+    private String obtenerString(Map<String, Object> datos, String clave, String valorPorDefecto) {
+        Object valor = datos.getOrDefault(clave, valorPorDefecto);
+        if (valor instanceof String) {
+            return (String) valor;
+        }
+        return valorPorDefecto;
+    }
 
+    // Método auxiliar para obtener valores de celdas dinámicamente
+    private Object getCellValue(Cell celda) {
+        if (celda == null) {
+            return "";
+        }
+        switch (celda.getCellType()) {
+            case STRING:
+                return celda.getStringCellValue();
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(celda)) {
+                    return celda.getDateCellValue();
+                } else {
+                    return celda.getNumericCellValue();
+                }
+            case BOOLEAN:
+                return celda.getBooleanCellValue();
+            case FORMULA:
+                return celda.getCellFormula();
+            case BLANK:
+                return "";
+            default:
+                return "";
+        }
+    }
     // Crear y guardar muchos cursos
     public CursoEntidad crearCurso(Map<String, Object> datos){
         return cursoRepositorio.save(new CursoEntidad((int) datos.get("semestre"),
@@ -145,14 +199,14 @@ public class CursoServicio {
         return false;
     }
 
-    private static String getVarlorCombinada(Sheet hoja, Cell celda){
+    private String getVarlorCombinada(Sheet hoja, Cell celda){
         for(int i = 0; i < hoja.getNumMergedRegions(); i++){
             CellRangeAddress combinada = hoja.getMergedRegion(i);
             if(combinada.isInRange(celda.getRowIndex(), celda.getColumnIndex())){
                 Row fila = hoja.getRow(combinada.getFirstRow());
                 celda = fila.getCell(combinada.getFirstColumn());
 
-                return celda.getStringCellValue();
+                return (String) getCellValue(celda);
             }
         }
         return "";
