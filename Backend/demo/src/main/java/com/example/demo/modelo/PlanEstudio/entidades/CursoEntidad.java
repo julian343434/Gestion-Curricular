@@ -49,6 +49,7 @@ public class CursoEntidad {
                 int maxEstudiantes,
                 List<PerteneceEntidad> planEstudio){
                     this.semestre = semestre;
+                    this.nombre = nombre;
                     this.obligatorio = obligatorio;
                     this.creditos = creditos;
                     this.relacion = relacion;

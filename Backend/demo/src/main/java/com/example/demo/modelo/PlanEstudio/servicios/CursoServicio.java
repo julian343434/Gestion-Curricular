@@ -48,7 +48,7 @@ public class CursoServicio {
 
         Map<String, Object> datos = new HashMap<>();
 
-        for (int i = 5; i <= hoja.getLastRowNum(); i++){
+        for (int i = 4; i <= hoja.getLastRowNum(); i++){
             Row fila = hoja.getRow(i);
 
             if(fila == null){
@@ -80,9 +80,8 @@ public class CursoServicio {
                 }
         
                 datos.put("maxEstudiantes", getCellValue(fila.getCell(13)));
-        
-                // Guardar la entidad Curso
-                cursos.add(cursoRepositorio.save(new CursoEntidad(
+                
+                CursoEntidad curso = new CursoEntidad(
                     obtenerEntero(datos, "semestre", 1),       // Convierte seguro a Integer
                     obtenerString(datos, "nombre", "Sin nombre"), // Convierte seguro a String
                     obtenerBooleano(datos, "obligatorio", false), // Convierte seguro a Boolean
@@ -93,7 +92,10 @@ public class CursoServicio {
                     obtenerString(datos, "areaDeFormacion", ""),  // Convierte seguro a String
                     obtenerEntero(datos, "maxEstudiantes", 0),    // Convierte seguro a Integer
                     new ArrayList<>()
-                )));
+                );
+
+                // Guardar la entidad Curso
+                cursos.add(cursoRepositorio.save(curso));
 
                 
             }
