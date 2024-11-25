@@ -26,7 +26,7 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gestion_curricular
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/gestion_curricular
       SPRING_DATASOURCE_USERNAME: software1
       SPRING_DATASOURCE_PASSWORD: software1
     networks:
