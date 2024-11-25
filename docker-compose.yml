@@ -5,12 +5,12 @@ services:
     build:
       context: ./db
     container_name: gestion_curricular_db
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_DB: gestion_curricular
       POSTGRES_USER: software1
       POSTGRES_PASSWORD: software1
+    ports:
+      - "5433:5433"
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
