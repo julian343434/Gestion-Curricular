@@ -41,6 +41,7 @@ public class ConfiguracionSeguridad {
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilita CORS con configuración personalizada
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/usuario/**").hasRole("Administrador") // Protege rutas de usuario con el rol ADMIN
+                .requestMatchers("/planEstudio/**").hasRole("Administrador") 
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permite solicitudes OPTIONS (preflight CORS)
                 .anyRequest().permitAll() // Permite todas las demás solicitudes sin autenticación
             )

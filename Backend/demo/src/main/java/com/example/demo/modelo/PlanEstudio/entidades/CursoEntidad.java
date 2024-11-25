@@ -19,7 +19,6 @@ public class CursoEntidad {
     private Long id_curso;
 
     private int semestre; // Semestre en el que se imparte el curso
-    @Column(length = 20)
     private String nombre; // Nombre del curso
     private boolean obligatorio; // Indica si el curso es obligatorio
     private int creditos; // Créditos del curso
@@ -34,12 +33,12 @@ public class CursoEntidad {
     @Column(name = "max_estudiantes")
     private int maxEstudiantes; // Número máximo de estudiantes permitidos
 
+    
     @OneToMany(mappedBy = "curso") // Relación uno a muchos con `PerteneceEntidad`
     private List<PerteneceEntidad> planEstudio;
 
     public CursoEntidad() {}
-    public CursoEntidad(Long id_curso, 
-                int semestre, 
+    public CursoEntidad(int semestre, 
                 String nombre, 
                 boolean obligatorio, 
                 int creditos, 
@@ -47,9 +46,10 @@ public class CursoEntidad {
                 String tipo,
                 int horasDeTrabajo,
                 String areaDeFromacion,
-                int maxEstudiantes){
-                    this.id_curso = id_curso;
+                int maxEstudiantes,
+                List<PerteneceEntidad> planEstudio){
                     this.semestre = semestre;
+                    this.nombre = nombre;
                     this.obligatorio = obligatorio;
                     this.creditos = creditos;
                     this.relacion = relacion;
@@ -57,6 +57,7 @@ public class CursoEntidad {
                     this.horasDeTrabajo = horasDeTrabajo;
                     this.areaDeFormacion = areaDeFromacion;
                     this.maxEstudiantes = maxEstudiantes;
+                    this.planEstudio = planEstudio;
                 }
 
     

@@ -59,7 +59,7 @@ create table comentario(
 create table curso(
     id_curso serial primary key,
     semestre integer check (semestre > 0 and semestre <= 10), --no permite que el semestre pase de 10 ni que baje de 1
-    nombre varchar(20),
+    nombre text,
     obligatorio boolean,
     creditos integer check (creditos > 0 and creditos <= 4), --no permite que los créditos sean mayores a 4 ni menores que 1
     relacion varchar(4),
@@ -88,8 +88,8 @@ create table plan_estudio(
 
 --se relacionan los planes de estudio con los cursos
 create table pertenece(
-    id_plan_estudio integer references plan_estudio(id_plan_estudio),
-    id_curso integer references curso(id_curso),
+    id_plan_estudio integer references plan_estudio(id_plan_estudio) ON DELETE CASCADE,
+    id_curso integer references curso(id_curso) ON DELETE CASCADE,
     anio integer,
     primary key (id_plan_estudio, id_curso)
 );
