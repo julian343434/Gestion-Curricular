@@ -42,6 +42,14 @@ public class ConfiguracionSeguridad {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/usuario/**").hasRole("Administrador") // Protege rutas de usuario con el rol ADMIN
                 .requestMatchers("/planEstudio/**").hasRole("Administrador") 
+                 // Endpoints públicos
+                 .requestMatchers(
+                    "/planEstudio/",
+                    "/planEstudio/{id}",
+                    "/planEstudio/planEstudio/{id}",
+                    "/planEstudio/curso/{id}",
+                    "/planEstudio/{id}/archivo/descargar"
+                ).permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permite solicitudes OPTIONS (preflight CORS)
                 .anyRequest().permitAll() // Permite todas las demás solicitudes sin autenticación
             )

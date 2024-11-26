@@ -37,8 +37,8 @@ public class PerteneceServicio {
         }
     }
 
-    public void guardarRelacion(PerteneceEntidad relacion){
-        perteneceRepositorio.save(relacion);
+    public PerteneceEntidad guardarRelacion(PerteneceEntidad relacion){
+        return perteneceRepositorio.save(relacion);
     }
 
 }
