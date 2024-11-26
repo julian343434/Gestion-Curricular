@@ -1,11 +1,13 @@
 package com.example.demo.modelo.PlanEstudio.servicios;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
 import com.example.demo.modelo.PlanEstudio.entidades.PlanEstudioEntidad;
 import com.example.demo.modelo.PlanEstudio.repositorios.PlanEstudioRepositorio;
@@ -48,5 +50,22 @@ public class PlanEstudioServicio {
         planEstudioRepositorio.deleteById(id);
     }
     
+    public PlanEstudioEntidad guardarPlan(PlanEstudioEntidad planEstudio){
+        return planEstudioRepositorio.save(planEstudio);
+    }
+
+    // Actualiza el plan de estudio
+    public void actualizarPlanEstudio(PlanEstudioEntidad planEstudio, Map<String, Object> campos){
+        campos.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(PlanEstudioEntidad.class, key);
+            if(field != null){
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, planEstudio, value);
+            }else{
+                throw new RuntimeException("Campo no encontrado " + key);
+            }
+        });
+        planEstudioRepositorio.save(planEstudio);
+    }
     
 }
