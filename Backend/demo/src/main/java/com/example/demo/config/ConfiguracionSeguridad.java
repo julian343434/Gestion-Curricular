@@ -39,14 +39,17 @@ public class ConfiguracionSeguridad {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // Desactiva CSRF para simplificar solicitudes desde frontend
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilita CORS con configuración personalizada
-            .authorizeHttpRequests(auth -> auth.requestMatchers(
-                "/planEstudio/", 
-                "/planEstudio/{id}",
-                "/planEstudio/planEstudio/{id}",
-                "/planEstudio/curso/{id}",
-                "/planEstudio/{id}/archivo/descargar").permitAll()
+            .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/usuario/**").hasRole("Administrador") // Protege rutas de usuario con el rol ADMIN
                 .requestMatchers("/planEstudio/**").hasRole("Administrador") 
+                 // Endpoints públicos
+                 .requestMatchers(
+                    "/planEstudio/",
+                    "/planEstudio/{id}",
+                    "/planEstudio/planEstudio/{id}",
+                    "/planEstudio/curso/{id}",
+                    "/planEstudio/{id}/archivo/descargar"
+                ).permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permite solicitudes OPTIONS (preflight CORS)
                 .anyRequest().permitAll() // Permite todas las demás solicitudes sin autenticación
             )
