@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -35,15 +34,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
-
-
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/planEstudio")
 public class PlanEstudio {
-
 
     @Autowired
     private CursoServicio cursoServicio;
@@ -204,9 +198,10 @@ public class PlanEstudio {
 
             perteneceEntidad.setPlanEstudio(planEstudioEntidad);
             perteneceEntidad.setCurso(curso);
-
-            curso.getPlanEstudio().add(perteneceEntidad);
+            
             perteneceServicio.guardarRelacion(perteneceEntidad);
+            curso.getPlanEstudio().add(perteneceEntidad);
+            
         }
 
         if(!campos.isEmpty()){
