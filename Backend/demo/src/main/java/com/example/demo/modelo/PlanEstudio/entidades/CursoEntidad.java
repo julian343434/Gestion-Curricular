@@ -2,6 +2,7 @@ package com.example.demo.modelo.PlanEstudio.entidades;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +35,7 @@ public class CursoEntidad {
     private int maxEstudiantes; // Número máximo de estudiantes permitidos
 
     
-    @OneToMany(mappedBy = "curso") // Relación uno a muchos con `PerteneceEntidad`
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL) // Relación uno a muchos con `PerteneceEntidad`
     private List<PerteneceEntidad> planEstudio;
 
     public CursoEntidad() {}

@@ -42,6 +42,15 @@ public class CursoServicio {
         return cursoRepositorio.findById(id).orElseThrow(() -> new RuntimeException("curso " + id + " no encontrado"));
     }
 
+    // Obtiene todos los cursos registrados a un plan de estudio
+    public List<CursoEntidad> ObtenerCursoPorPlanEstudio(Long id){
+        List<CursoEntidad> cursos = cursoRepositorio.findCursosByPlanEstudio(id);
+        if(cursos.isEmpty()){
+            throw new RuntimeException("Sin cursos registrados");
+        }
+        return cursos;
+    }
+
     // Crear y guardar muchos cursos
     public List<CursoEntidad> crearCursoArchivo(Sheet hoja){
         List<CursoEntidad> cursos = new ArrayList<>();

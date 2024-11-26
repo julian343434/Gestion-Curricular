@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +21,7 @@ public class PlanEstudioEntidad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_plan_estudio;
-    
+
     @JsonIgnore
     @Column(name = "archivo", columnDefinition = "bytea")
     private byte[] archivo; // Archivo asociado al plan de estudio
@@ -29,7 +30,7 @@ public class PlanEstudioEntidad {
     private String nombre; // Nombre del plan de estudio
     
     @JsonIgnore
-    @OneToMany(mappedBy = "planEstudio") // Relación uno a muchos con cursos
+    @OneToMany(mappedBy = "planEstudio", cascade = CascadeType.ALL) // Relación uno a muchos con cursos
     private List<PerteneceEntidad> cursos;
 
     public PlanEstudioEntidad() {}
