@@ -1,15 +1,22 @@
+# Usar la imagen oficial de PostgreSQL
 FROM postgres:15
 
-# Set environment variables for PostgreSQL
+# Variables de entorno para inicializar la base de datos
 ENV POSTGRES_DB=gestion_curricular
 ENV POSTGRES_USER=software1
 ENV POSTGRES_PASSWORD=software1
 
-# Copiar el script de inicialización desde la carpeta sql
+# Copiar el script de inicialización SQL
 COPY ./base.sql /docker-entrypoint-initdb.d/init.sql
 
-# Configurar el puerto 5433 en el archivo de configuración
-RUN echo "port = 5433" >> /usr/share/postgresql/postgresql.conf.sample
+# Copiar el archivo de configuración postgresql.conf personalizado
+COPY ./postgresql.conf /etc/postgresql/postgresql.conf
 
-# Exponer el puerto 5433
+# Configurar PostgreSQL para usar el archivo de configuración personalizado
+RUN echo "include '/etc/postgresql/postgresql.conf'" >> /usr/share/postgresql/postgresql.conf.sample
+
+# Exponer el puerto PostgreSQL
 EXPOSE 5433
+
+# Comando de inicio
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]

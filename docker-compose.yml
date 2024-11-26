@@ -1,8 +1,10 @@
-#version: "3.8"
+version: "3.8"
 
 services:
   db:
-    image: postgres:15
+    build:
+      context: ./db # Asegúrate de que el Dockerfile y los archivos necesarios estén en la carpeta "db"
+      dockerfile: Dockerfile
     container_name: postgres_custom
     environment:
       POSTGRES_DB: gestion_curricular
@@ -11,7 +13,8 @@ services:
     ports:
       - "5433:5433"
     volumes:
-      - ./base.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db/base.sql:/docker-entrypoint-initdb.d/init.sql # Asegúrate de que base.sql esté en la carpeta "db"
+      - db_data:/var/lib/postgresql/data
     networks:
       - app_network
 
