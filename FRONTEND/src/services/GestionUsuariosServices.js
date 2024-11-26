@@ -1,4 +1,3 @@
-
 import { BASE_URL } from "../environment";
 // Función para crear un nuevo usuario
 export const createUser = async (userData) => {
