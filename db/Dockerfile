@@ -7,7 +7,7 @@ ENV POSTGRES_USER=software1
 ENV POSTGRES_PASSWORD=software1
 
 # Copiar el script de inicialización SQL
-COPY ./base.sql /docker-entrypoint-initdb.d/init.sql
+COPY ./baseDeDatos.sql /docker-entrypoint-initdb.d/init.sql
 
 # Copiar el archivo de configuración postgresql.conf personalizado
 COPY ./postgresql.conf /etc/postgresql/postgresql.conf
