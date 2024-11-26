@@ -42,6 +42,14 @@ public class ConfiguracionSeguridad {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/usuario/**").hasRole("Administrador") // Protege rutas de usuario con el rol ADMIN
                 .requestMatchers("/planEstudio/**").hasRole("Administrador") 
+                 // Endpoints públicos
+                 .requestMatchers(
+                    "/planEstudio/",
+                    "/planEstudio/{id}",
+                    "/planEstudio/planEstudio/{id}",
+                    "/planEstudio/curso/{id}",
+                    "/planEstudio/{id}/archivo/descargar"
+                ).permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permite solicitudes OPTIONS (preflight CORS)
                 .anyRequest().permitAll() // Permite todas las demás solicitudes sin autenticación
             )
@@ -58,7 +66,7 @@ public class ConfiguracionSeguridad {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://otro-origen.com")); // Orígenes permitidos
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://www.campuscv.daikyri.tech")); // Orígenes permitidos
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); // Métodos permitidos
         configuration.setAllowedHeaders(Arrays.asList("*")); // Permite todos los encabezados
         configuration.setAllowCredentials(true); // Permite credenciales como cookies y headers
