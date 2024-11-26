@@ -10,7 +10,7 @@ export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const { token ,setToken, setUserRole, setSession } = useContext(AuthContext);
+    const { token, setToken, setUserRole, setSession } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -19,8 +19,9 @@ export default function Login() {
     
         try {
             // Llama a la función GetAccessToken con el username y password
-            const {TOKEN, payload } = await GetAccessToken({ username, password });
-            setToken(TOKEN)
+            const {token, payload } = await GetAccessToken({ username, password });
+            setToken(token)
+            console.log()
     
             if (token) {
                 // Guarda el token en localStorage y en el contexto
