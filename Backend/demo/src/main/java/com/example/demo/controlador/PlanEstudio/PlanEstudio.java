@@ -53,31 +53,26 @@ public class PlanEstudio {
     private PerteneceServicio perteneceServicio;
 
     @GetMapping("/")
-    @PreAuthorize("hasRole('Administrador')") 
     public List<CursoEntidad> obenerCursos(){
         return cursoServicio.ObtenerCurso();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('Administrador')") 
     public CursoEntidad obtenerUnCurso(@PathVariable Long id){
         return cursoServicio.obtenerCursoId(id);
     }
 
     @GetMapping("/curso/{id}")
-    @PreAuthorize("hasRole('Administrador')") 
     public List<CursoEntidad> obtenerCursoPlanEstudio(@PathVariable Long id){
         return cursoServicio.ObtenerCursoPorPlanEstudio(id);
     }
 
     @GetMapping("/planEstudio")
-    @PreAuthorize("hasRole('Administrador')") 
     public List<PlanEstudioEntidad> obenerTodosLosPlanEstudio(@PathVariable(required = false) Long id){
         return planEstudioServicio.ObtenerPlanEstudio();
     }
 
     @GetMapping("/planEstudio/{id}")
-    @PreAuthorize("hasRole('Administrador')") 
     public PlanEstudioEntidad obenerPlanEstudio(@PathVariable(required = false) Long id){
         return planEstudioServicio.buscarId(id);
     }
@@ -149,13 +144,13 @@ public class PlanEstudio {
 
                 relacion.setCurso(curso);
                 relacion.setPlanEstudio(planEstudioEntidad);
-                
+
+                relacion = perteneceServicio.guardarRelacion(relacion);
+
                 planEstudioEntidad.getCursos().add(relacion);
                 curso.getPlanEstudio().add(relacion);
             }
-
-            // Guardar relaciones
-            perteneceServicio.guardarRelacionArchivo(relaciones);
+            
 
             // Devolver la lista de cursos creados
             return cursos;
@@ -271,11 +266,11 @@ public class PlanEstudio {
                         relacion.setCurso(curso);
                         relacion.setPlanEstudio(planEstudioEntidad);
 
+                        relacion = perteneceServicio.guardarRelacion(relacion);
+
                         planEstudioEntidad.getCursos().add(relacion);
                         curso.getPlanEstudio().add(relacion);
                     }
-
-                    perteneceServicio.guardarRelacionArchivo(relaciones);
                     
                     devolver = true;
                     resultado = cursos;
@@ -308,7 +303,6 @@ public class PlanEstudio {
         cursoServicio.eliminarCurso(id);
         return ResponseEntity.ok("curso eliminado correctamente");
     }
-
 
 
     // Método de validación

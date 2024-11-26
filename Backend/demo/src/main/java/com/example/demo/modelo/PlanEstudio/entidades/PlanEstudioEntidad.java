@@ -1,5 +1,6 @@
 package com.example.demo.modelo.PlanEstudio.entidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,10 +31,13 @@ public class PlanEstudioEntidad {
     private String nombre; // Nombre del plan de estudio
     
     @JsonIgnore
-    @OneToMany(mappedBy = "planEstudio", cascade = CascadeType.ALL) // Relación uno a muchos con cursos
+    @OneToMany(mappedBy = "planEstudio", cascade = CascadeType.ALL, orphanRemoval = true) // Relación uno a muchos con cursos
     private List<PerteneceEntidad> cursos;
 
-    public PlanEstudioEntidad() {}
+     // Constructor vacío
+    public PlanEstudioEntidad() {
+        this.cursos = new ArrayList<>(); // Alternativamente, inicialización en el constructor
+    }
     public PlanEstudioEntidad(byte[] archivo, String descripcion, String nombre, List<PerteneceEntidad> cursos) {
         this.archivo = archivo;
         this.descripcion = descripcion;
