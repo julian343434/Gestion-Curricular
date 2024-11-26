@@ -22,12 +22,12 @@ public class PerteneceEntidad {
     @JsonIgnore
     @ManyToOne
     @MapsId("id_curso") // Parte de la clave compuesta
-    @JoinColumn(name = "id_curso")
+    @JoinColumn(name = "id_curso", nullable = false)
     private CursoEntidad curso;
 
     @ManyToOne
     @MapsId("id_plan_estudio") // Parte de la clave compuesta
-    @JoinColumn(name = "id_plan_estudio")
+    @JoinColumn(name = "id_plan_estudio", nullable = false)
     private PlanEstudioEntidad planEstudio;
 
     public PerteneceEntidad() {}

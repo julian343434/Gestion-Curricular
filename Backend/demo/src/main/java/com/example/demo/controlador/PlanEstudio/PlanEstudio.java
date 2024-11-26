@@ -1,6 +1,8 @@
 package com.example.demo.controlador.PlanEstudio;
 
 import java.io.InputStream;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,10 +58,43 @@ public class PlanEstudio {
         return cursoServicio.ObtenerCurso();
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('Administrador')") 
+    public CursoEntidad obtenerUnCurso(@PathVariable Long id){
+        return cursoServicio.obtenerCursoId(id);
+    }
+
+    @GetMapping("/curso/{id}")
+    @PreAuthorize("hasRole('Administrador')") 
+    public List<CursoEntidad> obtenerCursoPlanEstudio(@PathVariable Long id){
+        return cursoServicio.ObtenerCursoPorPlanEstudio(id);
+    }
+
     @GetMapping("/planEstudio")
     @PreAuthorize("hasRole('Administrador')") 
-    public List<PlanEstudioEntidad> obenerPlanEstudio(){
+    public List<PlanEstudioEntidad> obenerTodosLosPlanEstudio(@PathVariable(required = false) Long id){
         return planEstudioServicio.ObtenerPlanEstudio();
+    }
+
+    @GetMapping("/planEstudio/{id}")
+    @PreAuthorize("hasRole('Administrador')") 
+    public PlanEstudioEntidad obenerPlanEstudio(@PathVariable(required = false) Long id){
+        return planEstudioServicio.buscarId(id);
+    }
+
+    @GetMapping("/{id}/archivo/descargar")
+    public ResponseEntity<byte[]> descargarArchivo(@PathVariable Long id) {
+        // Obtener el archivo como byte[]
+        PlanEstudioEntidad planEstudio = planEstudioServicio.buscarId(id);
+        byte[] archivo = planEstudio.getArchivo();
+
+        // Configurar encabezados para la descarga
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=plan_estudio_" + id + ".xlsx");
+        headers.set(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
+
+        // Enviar el archivo
+        return new ResponseEntity<>(archivo, headers, HttpStatus.OK);
     }
 
     @PostMapping("/guardarArchivo")
@@ -273,6 +308,8 @@ public class PlanEstudio {
         cursoServicio.eliminarCurso(id);
         return ResponseEntity.ok("curso eliminado correctamente");
     }
+
+
 
     // Método de validación
     private void validarSiEsExcel(MultipartFile archivo) {
