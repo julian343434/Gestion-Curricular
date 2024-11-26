@@ -91,6 +91,6 @@ public class CursoEntidad {
     public int getMaxEstudiantes() { return maxEstudiantes; }
     public void setMaxEstudiantes(int maxEstudiantes){ this.maxEstudiantes = maxEstudiantes; }
 
-    public List<PerteneceEntidad> getplanEstudio() { return planEstudio; }
-    public void setplanEstudio(List<PerteneceEntidad> planEstudio) { this.planEstudio = planEstudio; }
+    public List<PerteneceEntidad> getPlanEstudio() { return planEstudio; }
+    public void setPlanEstudio(List<PerteneceEntidad> planEstudio) { this.planEstudio = planEstudio; }
 }

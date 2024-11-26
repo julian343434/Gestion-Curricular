@@ -197,6 +197,10 @@ public class CursoServicio {
         }
     }
 
+    public void eliminarCursoArchivo(Long idPlanEstudio){
+        cursoRepositorio.deleteCursosByPlanEstudio(idPlanEstudio);
+    }
+
     private static boolean esCombinada(Sheet hoja, Cell celda){
         for(int i = 0; i < hoja.getNumMergedRegions(); i++){
             CellRangeAddress combinada = hoja.getMergedRegion(i);

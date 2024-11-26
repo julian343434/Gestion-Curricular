@@ -20,8 +20,8 @@ public class PlanEstudioEntidad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_plan_estudio;
-
-    @JsonIgnore // Almacena datos binarios grandes, como archivos
+    
+    @JsonIgnore
     @Column(name = "archivo", columnDefinition = "bytea")
     private byte[] archivo; // Archivo asociado al plan de estudio
 

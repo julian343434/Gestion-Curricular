@@ -18,7 +18,7 @@ public class ManejadorExcepciones {
     public ResponseEntity<String> manejarRuntimeExcepcion(RuntimeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
-
+    
     /**
      * Maneja excepciones genéricas no previstas.
      *
